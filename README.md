@@ -29,14 +29,6 @@
 
 ---
 
-## **Technology Stack**
-
-* **Frontend:** React, Lucide React (icons), Recharts (charts), CSS
-* **Backend:** Node.js, Express.js
-* **Database:** MySQL
-* **Libraries:** `json2csv` (CSV export), `pdfkit` (PDF export), `cors`, `axios`
-
----
 
 ## **Modules**
 
@@ -63,7 +55,7 @@
 3. **Run backend**
 
    ```bash
-   node index.js
+   node server
    ```
 4. **Run frontend**
 
