@@ -16,7 +16,7 @@ const features = [
   {
     title: "My Complaints",
     description: "View all complaints submitted by you in one place. Monitor their status and history effortlessly.",
-    path: "/dashboard/my-complaints", // optional route
+    path: "/dashboard/mycompliants",
   },
 ];
 

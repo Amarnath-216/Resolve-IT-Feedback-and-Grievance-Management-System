@@ -5,6 +5,7 @@ import Status1 from "./components/Status1";
 import SubmitComplaint from "./components/SubmitComplaint";
 import Featured from "./components/Featured";
 import UserTabs from "./components/UserTabs";
+import MyComplaints from "./components/MyComplaints";
 
 const DashHome = ({ user }) => (
   <div>
@@ -35,6 +36,7 @@ const Dashboard = () => {
           <Route index element={<DashHome user={user} />} />
           <Route path="complaint" element={<SubmitComplaint user={user} />} />
           <Route path="status1" element={<Status1 user={user} />} />
+          <Route path="mycompliants" element={<MyComplaints user={user} />} />
         </Routes>
       </div>
     </div>

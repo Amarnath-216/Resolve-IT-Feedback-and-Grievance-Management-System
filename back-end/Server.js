@@ -6,6 +6,8 @@ import statusRoutes from "./api/status.js";
 import allComplaintsRouter from "./api/allcomplaints.js";
 import escalateRouter from "./api/escalate.js";
 import updateComplaintsRouter from "./api/updatecomplaints.js";
+import userComplaintsRouter from "./api/userComplaints.js";
+
 
 
 const app = express();
@@ -18,7 +20,7 @@ app.use("/complaints", complaintsRouter);
 app.use("/api/status", statusRoutes);
 app.use("/api/allcomplaints", allComplaintsRouter);
 app.use("/api/escalate", escalateRouter);
-
+app.use("/api/userComplaints", userComplaintsRouter);
 //app.use("/api/updatecomplaints", updateComplaintsRouter);
 
 

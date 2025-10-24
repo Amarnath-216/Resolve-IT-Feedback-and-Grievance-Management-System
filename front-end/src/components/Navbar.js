@@ -24,7 +24,7 @@ const Navbar = () => {
                 <span>Complaint</span>
               </Link>
               <Link to="/dashboard/status1" className='linksto'>
-                <span>Status</span>
+                <span>Check Status</span>
               </Link>
                 <button onClick={handleLogout}>Logout</button>
             </div>
