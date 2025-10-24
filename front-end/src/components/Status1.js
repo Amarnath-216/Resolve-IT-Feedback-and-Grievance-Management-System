@@ -32,10 +32,13 @@ const Status = () => {
   const currentStatus = complaintData?.status?.toLowerCase() || "";
   const steps = ["submitted", "under review", "resolved"];
 
-  const activeIndex =
-    currentStatus.toLowerCase() === "rejected"
-      ? steps.length - 1
-      : steps.indexOf(currentStatus.toLowerCase());
+const activeIndex =
+  currentStatus.toLowerCase() === "rejected"
+    ? steps.length - 1
+    : currentStatus.toLowerCase() === "escalated"
+    ? steps.indexOf("under review") // treat escalated as under review step
+    : steps.indexOf(currentStatus.toLowerCase());
+
 
   const isRejected = currentStatus.toLowerCase() === "rejected";
 
@@ -64,39 +67,44 @@ const Status = () => {
 
           
 
-    {/* Progress Bar */}
-    <div className="stepper-container">
-      {steps.map((step, index) => {
-        const isActive = index === activeIndex;
-        const isCompletedBefore = index < activeIndex;
-        const isLineBeforeRejected =
-          isRejected && index === steps.length - 2; // line before last step
+{/* Progress Bar */}
+<div className="stepper-container">
+  {steps.map((step, index) => {
+    const isActive = index === activeIndex;
+    const isCompletedBefore = index < activeIndex;
+    const isLineBeforeRejected =
+      isRejected && index === steps.length - 2;
 
-        // Change last label to "rejected" if status is rejected
-        const displayLabel =
-          isRejected && index === steps.length - 1 ? "rejected" : step;
+    // Replace "under review" with "Escalated" if status is escalated
+    const displayLabel =
+      isRejected && index === steps.length - 1
+        ? "rejected"
+        : currentStatus.toLowerCase() === "escalated" && step === "under review"
+        ? "Escalated"
+        : step;
 
-        return (
-          <div
-            key={index}
-            className={`stepper-step ${
-              isCompletedBefore ? "completed-before" : ""
-            } ${isLineBeforeRejected ? "line-before-rejected" : ""}`}
-          >
-            <div
-              className={`circle ${
-                isActive || isCompletedBefore ? "active" : ""
-              } ${isCompletedBefore ? "completed" : ""} ${
-                isRejected && isActive ? "rejected" : ""
-              }`}
-            >
-              {!isActive && !isCompletedBefore ? index + 1 : ""}
-            </div>
-            <div className="label">{displayLabel}</div>
-          </div>
-        );
-      })}
-    </div>
+    return (
+      <div
+        key={index}
+        className={`stepper-step ${
+          isCompletedBefore ? "completed-before" : ""
+        } ${isLineBeforeRejected ? "line-before-rejected" : ""}`}
+      >
+        <div
+          className={`circle ${
+            isActive || isCompletedBefore ? "active" : ""
+          } ${isCompletedBefore ? "completed" : ""} ${
+            isRejected && isActive ? "rejected" : ""
+          }`}
+        >
+          {!isActive && !isCompletedBefore ? index + 1 : ""}
+        </div>
+        <div className="label">{displayLabel}</div>
+      </div>
+    );
+  })}
+</div>
+
 
           {/* Timeline */}
           <div className="timeline">
