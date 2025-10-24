@@ -23,19 +23,23 @@ const handleSubmit = async (e) => {
 
     const data = await res.json();
 
-    if (res.ok && data.success) {
-      setStatus("");
-      setMessage(null);
+if (res.ok && data.success) {
+  setStatus("");
+  setMessage(null);
 
-      // ✅ Check user role
-      const userRole = data.user.role;
+  // ✅ Save user details in localStorage
+  localStorage.setItem("user", JSON.stringify(data.user));
 
-      if (userRole === "admin") {
-        navigate("/admindashboard");
-      } else {
-        navigate("/dashboard");
-      }
-    } else {
+  // ✅ Check user role and navigate
+  const userRole = data.user.role;
+
+  if (userRole === "admin") {
+    navigate("/admindashboard");
+  } else {
+    navigate("/dashboard");
+  }
+}
+ else {
       setStatus("error");
       setMessage(data.message);
     }

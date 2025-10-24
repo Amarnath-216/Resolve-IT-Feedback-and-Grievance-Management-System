@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./SubmitComplaint.css";
 
-const SubmitComplaint = () => {
+const SubmitComplaint = ({ user }) => {
   const [submissionType, setSubmissionType] = useState("Public");
   const [subject, setSubject] = useState("");
   const [description, setDescription] = useState("");
@@ -20,7 +20,7 @@ const SubmitComplaint = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("user_id", 1); // 🔹 Replace with logged-in user ID
+    formData.append("user_id", user?.id || ""); // 🔹 Replace with logged-in user ID
     formData.append("is_anonymous", submissionType === "Anonymous" ? 1 : 0);
     formData.append("category", "General"); // can be extended later
     formData.append("subject", subject);

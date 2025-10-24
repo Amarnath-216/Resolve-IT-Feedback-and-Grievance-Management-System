@@ -3,74 +3,9 @@ import pool from "../Service.js";
 
 const router = express.Router();
 
-// Helper: business days between two dates
-function businessDaysBetween(startDate, endDate) {
-  const d1 = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-  const d2 = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-  let count = 0;
-  let cur = new Date(d1);
-  while (cur <= d2) {
-    const day = cur.getDay();
-    if (day !== 0 && day !== 6) count++;
-    cur.setDate(cur.getDate() + 1);
-  }
-  return count - 1; // exclude updated_at day
-}
-
-// Auto-escalation function
-async function autoEscalate() {
-  const connection = await pool.getConnection();
-  try {
-    const [rows] = await connection.query(`
-      SELECT id, updated_at FROM complaints
-      WHERE status IN ('Submitted', 'Under Review')
-    `);
-
-    const now = new Date();
-    const toEscalate = rows.filter(r => businessDaysBetween(new Date(r.updated_at), now) >= 3);
-
-    if (toEscalate.length === 0) return [];
-
-    await connection.beginTransaction();
-
-    // Update complaint status
-    const ids = toEscalate.map(r => r.id);
-    await connection.query(`UPDATE complaints SET status='Escalated', updated_at=NOW() WHERE id IN (?)`, [ids]);
-
-    // Insert into escalations
-    const escalateReason = "Auto-escalated after 3 business days without action";
-    const escRows = toEscalate.map(r => [r.id, null, escalateReason, new Date()]);
-    if (escRows.length > 0) {
-      await connection.query(
-        `INSERT INTO escalations (complaint_id, escalated_to, reason, escalated_at) VALUES ?`,
-        [escRows]
-      );
-    }
-
-    // Insert into statuslogs
-    const logRows = toEscalate.map(r => [r.id, "Escalated", escalateReason, 0]); // 0 = system
-    if (logRows.length > 0) {
-      await connection.query(
-        `INSERT INTO statuslogs (complaint_id, status, comment, updated_by) VALUES ?`,
-        [logRows]
-      );
-    }
-
-    await connection.commit();
-    connection.release();
-    return ids;
-  } catch (err) {
-    await connection.rollback();
-    connection.release();
-    throw err;
-  }
-}
-
-// GET pending complaints (runs auto-escalation first)
+// GET pending complaints
 router.get("/pending", async (req, res) => {
   try {
-    await autoEscalate(); // auto-escalate if needed
-
     const connection = await pool.getConnection();
     const [rows] = await connection.query(`
       SELECT c.id, c.subject, c.status, u.email AS userEmail
@@ -101,22 +36,22 @@ router.post("/:id", async (req, res) => {
   try {
     await connection.beginTransaction();
 
-    // Update complaint
+    // Update complaint status
     await connection.query(
       `UPDATE complaints SET status='Escalated', updated_at=NOW() WHERE id=?`,
       [complaintId]
     );
 
-    // Insert escalation record
+    // Insert into escalations
     await connection.query(
       `INSERT INTO escalations (complaint_id, escalated_to, reason, escalated_at) VALUES (?, ?, ?, NOW())`,
       [complaintId, escalated_to || null, reason]
     );
 
-    // Insert statuslog
+    // Insert into statuslogs
     await connection.query(
       `INSERT INTO statuslogs (complaint_id, status, comment, updated_by) VALUES (?, ?, ?, ?)`,
-      [complaintId, "Escalated", reason, escalated_by || 0]
+      [complaintId, "Escalated", reason, escalated_by || 38] // Use Admin ID 38
     );
 
     await connection.commit();

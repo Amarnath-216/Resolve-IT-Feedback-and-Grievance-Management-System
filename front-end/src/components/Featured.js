@@ -2,12 +2,12 @@ import React from 'react'
 import { Link } from "react-router-dom";
 import './Featured.css';
 
-const Featured = () => {
+const Featured = ({ user }) => {
   return (
     <div className="featured">
         <div className='container'>
             <div className='left'>
-                <h1>Welcome, UserName</h1>
+                <h1>Welcome, {user ? user.name : "Guest"}</h1>
                 <p>
                      Our portal allows you to easily submit and track your complaints online. 
                      We make sure your issues reach the right authorities quickly and efficiently.
