@@ -6,6 +6,7 @@ import AdminTabs from "./adminComponents/AdminTabs";
 import AllComplaints from "./adminComponents/AllComplaints";
 import ManageComplaints from "./adminComponents/ManageComplaints";
 import EscalateComplaint from "./adminComponents/EscalateComplaint";
+import ReportsDashboard from "./adminComponents/ReportsDashboard";
 const AdminDashHome = () => (
   <div>
     <AdminFeatured />
@@ -28,6 +29,7 @@ const AdminDashboard = () => {
           <Route path="allcomplaints" element={<AllComplaints />} />
           <Route path="managecomplaints" element={<ManageComplaints />} />
           <Route path="escalatecomplaint" element={<EscalateComplaint />} />
+          <Route path="reports" element={<ReportsDashboard />} />
 
         </Routes>
       </div>

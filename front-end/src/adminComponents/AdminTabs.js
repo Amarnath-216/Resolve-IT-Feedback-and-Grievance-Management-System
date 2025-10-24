@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./AdminTabs.css";
-import { ClipboardCheck, FileText, MessageSquare, FolderOpen } from "lucide-react"; 
+import { ClipboardCheck, FileText,  TrendingUp , FolderOpen } from "lucide-react"; 
 
 const adminFeatures = [
   {
@@ -16,17 +16,17 @@ const adminFeatures = [
     icon: <FileText size={28} strokeWidth={2.2} />,
     link: "/admindashboard/escalatecomplaint",
   },
+//  {
+//    title: "Internal Notes",
+//    description: "Add private notes visible only to staff for collaboration.",
+//    icon: <FileText size={28} strokeWidth={2.2} />,
+//    link: "/admindashboard/internal-notes",
+//  },
   {
-    title: "Internal Notes",
-    description: "Add private notes visible only to staff for collaboration.",
-    icon: <FileText size={28} strokeWidth={2.2} />,
-    link: "/admindashboard/internal-notes",
-  },
-  {
-    title: "Reply to Users",
-    description: "Send public updates and replies to keep users informed.",
-    icon: <MessageSquare size={28} strokeWidth={2.2} />,
-    link: "/admindashboard/replies",
+    title: "Reports",
+    description: "Visual dashboards show trends by category, status, and time",
+    icon: < TrendingUp  size={28} strokeWidth={2.2} />,
+    link: "/admindashboard/reports",
   },
   {
     title: "All Complaints",

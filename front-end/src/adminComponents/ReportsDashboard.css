@@ -1,0 +1,48 @@
+.reports-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 80vh;
+}
+
+.reports-container h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.reports-buttons {
+  margin-bottom: 20px;
+}
+
+.reports-buttons button {
+  background-color: #ff7f00;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin-right: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.reports-buttons button:hover {
+  background-color: #e56f00;
+}
+
+.charts-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: space-between;
+}
+
+.chart-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+  flex: 1 1 45%;
+  min-width: 300px;
+}
