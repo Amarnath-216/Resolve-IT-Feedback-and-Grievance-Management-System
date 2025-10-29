@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import emailjs from "emailjs-com";
 import "./EscalateComplaint.css";
 
 const EscalateComplaint = () => {
@@ -12,25 +13,23 @@ const EscalateComplaint = () => {
   const higherAuthorities = [
     { id: 39, name: "Senior Admin" },
     // Add more if needed
-    // { id: 40, name: "Regional Officer" },
-    // { id: 41, name: "Chief Complaint Officer" },
   ];
+
+  const SERVICE_ID = "service_5sr0lbo"; // your EmailJS service ID
+  const TEMPLATE_ID = "template_wwq15bn"; // your EmailJS template ID
+  const USER_ID = "1QEsYwa5Wz3C8ogQa"; // your EmailJS user ID
 
   const showToast = (message, type = "success") => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 2500);
   };
 
-  // Wrap in useCallback to fix ESLint warning
   const fetchPendingComplaints = useCallback(async () => {
     try {
       const res = await fetch("http://localhost:5000/api/escalate/pending");
       const data = await res.json();
-
-      // Force array to avoid .map errors
       const complaintsArray = Array.isArray(data) ? data : [];
       setPendingComplaints(complaintsArray);
-
       if (!selectedComplaint && complaintsArray.length > 0)
         setSelectedComplaint(complaintsArray[0]);
     } catch (err) {
@@ -43,13 +42,32 @@ const EscalateComplaint = () => {
     fetchPendingComplaints();
   }, [fetchPendingComplaints]);
 
+  // Function to send email via EmailJS
+  const sendNotificationEmail = (userEmail, complaintId, authorityName) => {
+    const templateParams = {
+      to_email: userEmail,
+      complaint_id: complaintId,
+      authority_name: authorityName,
+      reply_to: "", // optional: remove reply-to
+    };
+
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, USER_ID)
+      .then(
+        (response) => {
+          console.log("Email sent successfully!", response.status, response.text);
+        },
+        (err) => {
+          console.error("Failed to send email:", err);
+        }
+      );
+  };
+
   const handleEscalate = async () => {
     if (!selectedAuthority) {
       showToast("Select a higher authority", "error");
       return;
     }
 
-    // Strict equality fix for ESLint (convert string to number)
     const selectedAuthObj = higherAuthorities.find(
       (a) => a.id === Number(selectedAuthority)
     );
@@ -61,11 +79,11 @@ const EscalateComplaint = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            escalated_to: Number(selectedAuthority), // numeric ID
+            escalated_to: Number(selectedAuthority),
             reason: `Escalated to ${selectedAuthObj?.name} by Admin${
               notifyAll ? " (All parties notified)" : ""
             }`,
-            escalated_by: 38, // replace with current admin ID
+            escalated_by: 38,
           }),
         }
       );
@@ -73,7 +91,16 @@ const EscalateComplaint = () => {
       const data = await res.json();
       if (res.ok) {
         showToast("Escalated successfully", "success");
-        fetchPendingComplaints(); // refresh list
+        fetchPendingComplaints();
+
+        // ✅ Send email if Notify All is checked
+        if (notifyAll) {
+          sendNotificationEmail(
+            selectedComplaint.userEmail,
+            selectedComplaint.id,
+            selectedAuthObj?.name
+          );
+        }
       } else {
         showToast(data.message || "Failed to escalate", "error");
       }
