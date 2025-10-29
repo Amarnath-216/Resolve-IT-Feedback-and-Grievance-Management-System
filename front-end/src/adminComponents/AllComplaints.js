@@ -26,7 +26,9 @@ const AllComplaints = () => {
   }, []);
 
   const filteredComplaints = complaints.filter(
-    (c) => activeFilter.toLowerCase() === "all" || c.status.toLowerCase() === activeFilter.toLowerCase()
+    (c) =>
+      activeFilter.toLowerCase() === "all" ||
+      c.status.toLowerCase() === activeFilter.toLowerCase()
   );
 
   if (loading) return <div>Loading complaints...</div>;
@@ -38,7 +40,7 @@ const AllComplaints = () => {
 
       {/* Filter buttons */}
       <div className="filter-buttons">
-        {["All", "Submitted", "Under Review", "Resolved", "Rejected"].map(
+        {["All", "Submitted", "Under Review", "Resolved", "Rejected", "Escalated"].map(
           (status) => (
             <button
               key={status}
@@ -53,32 +55,38 @@ const AllComplaints = () => {
 
       {/* Complaints List */}
       <div className="complaints-list">
-        {filteredComplaints.map((c) => (
-          <div key={c.id} className="complaint-card-horizontal">
-            <div className="complaint-left">
-              <div className="complaint-line">
-                <span className="card-labelll">Complaint ID:</span>
-                <span className="card-valueee">#{c.id}</span>
+        {filteredComplaints.length === 0 ? (
+          <div className="no-complaints">No complaints found.</div>
+        ) : (
+          filteredComplaints.map((c) => (
+            <div key={c.id} className="complaint-card-horizontal">
+              <div className="complaint-left">
+                <div className="complaint-line">
+                  <span className="card-labelll">Complaint ID:</span>
+                  <span className="card-valueee">#{c.id}</span>
+                </div>
+                <div className="complaint-line">
+                  <span className="card-labelll">Issue:</span>
+                  <span className="card-valueee">{c.subject}</span>
+                </div>
+                <div className="complaint-line">
+                  <span className="card-labelll">Date:</span>
+                  <span className="card-valueee">
+                    {new Date(c.created_at).toLocaleDateString()}
+                  </span>
+                </div>
               </div>
-              <div className="complaint-line">
-                <span className="card-labelll">Issue:</span>
-                <span className="card-valueee">{c.subject}</span>
-              </div>
-              <div className="complaint-line">
-                <span className="card-labelll">Date:</span>
-                <span className="card-valueee">{new Date(c.created_at).toLocaleDateString()}</span>
-              </div>
-            </div>
 
-            <div
-              className={`complaint-status ${c.status
-                .toLowerCase()
-                .replace(" ", "-")}`}
-            >
-              {c.status}
+              <div
+                className={`complaint-status ${c.status
+                  .toLowerCase()
+                  .replace(" ", "-")}`}
+              >
+                {c.status}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

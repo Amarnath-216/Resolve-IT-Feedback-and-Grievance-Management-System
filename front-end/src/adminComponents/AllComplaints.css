@@ -114,6 +114,12 @@
   background-color: #ff4500;
 }
 
+.complaint-status.escalated {
+  background-color: #ffb100; /* orange-yellow warning color */
+  color: white;
+  box-shadow: 0 2px 6px rgba(255, 177, 0, 0.4);
+}
+
 /* Responsive */
 @media (max-width: 1440px) {
   .all-complaints-container {
