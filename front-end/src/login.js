@@ -52,8 +52,9 @@ if (res.ok && data.success) {
   return (
     <div className='body'>
     <div className="outer-container">
-      <h2>Welcome Back</h2>
+      
       <div className="inner-container">
+        <h2>Login</h2>
         {message && <div className={`message ${status}`}>{message}</div>}
 
         <form onSubmit={handleSubmit}>

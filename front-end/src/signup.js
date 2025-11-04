@@ -45,9 +45,10 @@ const Signup = () => {
   return (
     <div className='body'>
       <div className="outer-container">
-        <h2>Create Your Account</h2>
+        
 
         <div className="inner-container">
+          <h2>Create Your Account</h2>
           {message && status === "error" && (
             <div className={`message ${status}`}>
               {message}
